@@ -1,0 +1,27 @@
+import numpy as np
+print("=== (N,1) vs (N,) vs (1,N) ===")
+flat = np.array([1,2,3]);          print("flat  ", flat.shape, "ndim", flat.ndim)
+col  = np.array([[1],[2],[3]]);    print("col   ", col.shape, "ndim", col.ndim)
+row  = np.array([[1,2,3]]);        print("row   ", row.shape, "ndim", row.ndim)
+print("\n=== .T 동작 ===")
+print("flat.T shape", flat.T.shape, "(변화 없음!)")
+print("col.T  shape", col.T.shape, "→ (1,3)")
+print("\n=== @ / dot ===")
+print("flat @ flat =", flat @ flat, "(1D@1D = 내적 스칼라, NOT 행렬곱/broadcasting)")
+print("(1,3)@(3,1) =", (row @ col), "shape", (row@col).shape, "(행렬곱 → (1,1))")
+print("col.T @ col =", (col.T @ col).ravel(), "= Σvᵢ² (vᵀv)")
+print("\n=== np.linalg는 2D 요구 ===")
+A = np.array([[4,7],[2,6]])
+print("det(2D) =", round(float(np.linalg.det(A)),2))
+try:
+    np.linalg.det(flat)
+except np.linalg.LinAlgError as e:
+    print("det(1D) → LinAlgError:", str(e)[:45])
+print("\n=== strides (C 포인터 산술) ===")
+m = np.arange(6).reshape(2,3)
+print("reshape(2,3):\n", m)
+print("shape", m.shape, "strides(bytes)", m.strides, "(다음행=+%d, 다음열=+%d)"%(m.strides[0],m.strides[1]))
+print("내부 1D 버퍼:", m.ravel())  # 메모리는 1D 연속
+print("\n=== 변환 한 줄 ===")
+print("([[1,2,3]]).T.shape =", np.array([[1,2,3]]).T.shape)
+print("([1,2,3]).reshape(-1,1).shape =", np.array([1,2,3]).reshape(-1,1).shape)
