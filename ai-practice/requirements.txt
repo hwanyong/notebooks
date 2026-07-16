@@ -1,0 +1,14 @@
+# AI 암반 정복 — 공유 실습 환경 (Python 3.12)
+# 검증된 조합: torch 2.4.0 ↔ numpy 1.x (2.0 미만)
+torch==2.4.0
+numpy<2.0.0
+
+# 시각화 (1단계 선형대수부터 사용)
+matplotlib>=3.8
+
+# 계산 그래프 시각화 (선택) — 별도로 `brew install graphviz` 도 필요
+# torchviz
+
+# 주피터 노트북으로 실습할 경우 (선택)
+# jupyterlab
+# ipykernel
