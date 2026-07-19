@@ -61,6 +61,8 @@
 | 〃 | LayerNorm→RMSNorm, GELU→SwiGLU 교체 | 〃 | 3~5h |
 | 〃 | 바닐라 MHA → GQA 교체 | 〃 | 3~5h |
 | 〃 (선택) | FFN → 토이 MoE(전문가 N개+라우터) | — | 5~10h |
+| [밑바닥LLM] 5.4~5.5(사전훈련 가중치 로드) 직후 | 스케일링 법칙 — 파라미터·데이터·연산량 최적 배분 | Kaplan 2020·Hoffmann 2022(Chinchilla) 논문 | 미정 |
+| 〃 | 해석가능성 — 모델 내부 회로 분석 입문 | Anthropic Transformer Circuits(transformer-circuits.pub)·Neel Nanda 튜토리얼 | 미정 |
 
 🔗 정렬·추론모델(DPO·GRPO) 확장 참조는 [[_4단계 - 커리어 분기]]에.
 
