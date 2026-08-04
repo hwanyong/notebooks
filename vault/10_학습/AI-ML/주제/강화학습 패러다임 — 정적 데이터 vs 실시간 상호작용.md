@@ -33,7 +33,7 @@
 ## 1. 지도학습 vs 강화학습 — 무엇이 다른가
 > 머신러닝의 세 패러다임 — **비지도**(레이블 없이 군집), **지도**(레이블로 분류·예측), **강화**(보상으로 행동 학습). 이 노트는 셋 중 *강화학습*이 왜 코드가 다른지를 다룬다.
 
-![[ML 세 패러다임 (비지도·지도·강화).png|560]]
+![[ml-three-paradigms-unsupervised-supervised-reinforcement (ext-src).png|560]]
 ▲ 비지도(군집) · 지도(경계선 분류) · 강화(상태→행동→보상 순환). _출처: Getty Images_
 
 | | 지도학습 / LLM | 강화학습(RL) |
@@ -50,7 +50,7 @@
 - 루프: `state` → agent가 `action` 선택 → `env.step(action)` → `next_state` + `reward` → 점수판 갱신 → 반복.
 - **피드백 루프:** 행동→환경변화→보상→다음행동. (지도학습의 forward→loss→backward와 자리는 비슷하나 *환경이 데이터를 생성*)
 
-![[강화학습 구조 (에이전트·환경·보상).png|520]]
+![[rl-structure-agent-environment-reward (ext-src).png|520]]
 ▲ 에이전트(Agent)가 행동(Actions)을 환경(Environment)에 가하고 보상(Rewards)을 받는 **피드백 루프**. _출처: Getty Images_
 
 ## 3. 코드가 다른 이유 — loss/gradient 대신 '점수판'

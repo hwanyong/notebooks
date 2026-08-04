@@ -39,7 +39,7 @@
 > - 코드 A-3: `grad(loss, w1, retain_graph=True)` 수동, 또는 **`loss.backward()`** → 모든 leaf의 `.grad`에 저장. 결과 `∂L/∂w1 ≈ -0.0898`, `∂L/∂b ≈ -0.0817`.
 > - **핵심:** `.backward()`가 미분을 처리 → *직접 편도함수를 계산할 필요가 전혀 없다.*
 
-![[그림 A-8 backward 연쇄법칙.png|560]]
+![[fig-A-8 backward-chain-rule.png|560]]
 
 > 💭 **여기서 내가 직접 해본 것 ↓**
 

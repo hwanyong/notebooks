@@ -71,10 +71,10 @@
 > - **DDP(DistributedDataParallel([dɪˈstrɪbjutɪd ˈdeɪtə ˈpærəlɛl], 디스트리뷰티드 데이터 패러렐, 디스트리뷰티드 데이터 패러렐)):** 입력 데이터를 여러 장치에 *분할*해 동시 처리(그림 A-12·A-13).
 >   - 각 GPU가 **모델 복사본**을 가짐 → 훈련 반복마다 **다른 미니배치**(`DistributedSampler`로 겹치지 않게 분배) → 복사본마다 다른 로짓·grad → **grad를 평균·동기화**해 모든 복사본을 동일 가중치로 갱신(발산 방지).
 >
-> ![[그림 A-12 DDP 모델·데이터 전송.png|620]]
+> ![[fig-A-12 ddp-model-data-transfer.png|620]]
 > ▲ 그림 A-12 — ① 각 GPU에 모델 복사본을 만들고 ② 입력을 고유 미니배치로 분할해 각 복사본에 전달.
 >
-> ![[그림 A-13 DDP 정방향·역전파 동기화.png|620]]
+> ![[fig-A-13 ddp-forward-backward-grad-sync.png|620]]
 > ▲ 그림 A-13 — ③ 각 GPU가 독립적으로 forward(로짓) ④ 역전파 후 **모든 GPU의 grad를 동기화**(평균) → 모든 복사본이 동일 가중치로 갱신.
 > - **핵심 함수(코드 A-12·A-13):** `init_process_group`/`destroy_process_group`(분산 시작/종료), `DistributedSampler`(배치 분배), `mp.spawn`(GPU당 프로세스 1개 생성), `DDP(model, device_ids=[rank])`.
 >   - `ddp_setup`: `MASTER_ADDR`·`MASTER_PORT`(프로세스 간 통신), `backend="nccl"`(**NCCL([ˈnɪkəl], 니클, 니클) = NVIDIA 집합통신 라이브러리**, GPU↔GPU), `torch.cuda.set_device(rank)`.
