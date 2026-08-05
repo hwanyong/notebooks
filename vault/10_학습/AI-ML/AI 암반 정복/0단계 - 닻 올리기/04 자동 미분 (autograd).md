@@ -44,7 +44,7 @@
 > 💭 **여기서 내가 직접 해본 것 ↓**
 
 ## 🧩 직접 구해보기 — `grad()` vs `backward()` + 검산
-> 코드: `~/LOCAL/03-00_STUDIES/AI/00_setup/a4_autograd.py`
+> 코드: `~/LOCAL/notebooks-mirror/ai-practice/00_setup/a4_autograd.py`
 
 forward 그래프를 만든 뒤, 연쇄 법칙(역전파)으로 가중치별 그레이디언트를 두 방법으로 구한다.
 

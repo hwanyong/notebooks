@@ -202,7 +202,7 @@ def __next__(self):
 
 ## 🧩 코드 실습 (A.6)
 > 🎯 목표: `Dataset`을 직접 구현해 `DataLoader`로 감싸고, **배치가 어떻게 나뉘고 셔플되는지**·`drop_last`·`num_workers`의 효과를 눈으로 확인.
-> 코드: `~/LOCAL/03-00_STUDIES/AI/00_setup/a6_dataloader.py`
+> 코드: `~/LOCAL/notebooks-mirror/ai-practice/00_setup/a6_dataloader.py`
 
 ```python
 import torch

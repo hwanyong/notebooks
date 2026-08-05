@@ -47,7 +47,7 @@
 brew install python@3.12
 
 # 2. 프로젝트 전용 가상환경 (3.12로 생성하는 게 핵심)
-cd ~/LOCAL/03-00_STUDIES/AI/sandbox
+cd ~/LOCAL/notebooks-mirror/ai-practice/sandbox
 python3.12 -m venv .venv
 source .venv/bin/activate
 

@@ -146,7 +146,7 @@
 ## 🧩 코드 실습 (A.9)
 > 🎯 목표: ① 장치 기초(`.to(device)`·같은 장치 규칙)와 단일 GPU(=내 맥 MPS) 훈련을 디바이스-애그노스틱으로 확인, ② DDP 구조를 코드로 이해(실행은 멀티GPU 환경).
 
-**① 장치 기초 + 단일 GPU** — `~/LOCAL/03-00_STUDIES/AI/00_setup/a9_gpu_basics.py` (검증: 예측 `[0,0,0,1,1]`)
+**① 장치 기초 + 단일 GPU** — `~/LOCAL/notebooks-mirror/ai-practice/00_setup/a9_gpu_basics.py` (검증: 예측 `[0,0,0,1,1]`)
 ```python
 def pick_device():
     if torch.backends.mps.is_available(): return torch.device("mps")  # 내 맥
@@ -161,7 +161,7 @@ for features, labels in loader:
 # 같은 장치 규칙: cpu 텐서 + gpu 텐서 → RuntimeError
 ```
 
-**② DDP (참고용)** — `~/LOCAL/03-00_STUDIES/AI/00_setup/a9_ddp_reference.py`
+**② DDP (참고용)** — `~/LOCAL/notebooks-mirror/ai-practice/00_setup/a9_ddp_reference.py`
 > ⚠️ **NVIDIA GPU 2장+ & NCCL 전용 — 내 맥(MPS)에선 미실행**(문법만 검증). 책 코드 A-12·A-13 + 공식 저장소 패턴.
 ```python
 def ddp_setup(rank, world_size):

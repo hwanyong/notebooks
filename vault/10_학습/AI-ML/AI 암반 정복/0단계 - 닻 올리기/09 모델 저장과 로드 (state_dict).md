@@ -86,7 +86,7 @@
 
 ## 🧩 코드 실습 (A.8)
 > 🎯 목표: A.7에서 학습한 모델을 `state_dict`로 저장 → 새 모델에 로드 → **저장 전후 예측이 같은지** 확인.
-> 코드: `~/LOCAL/03-00_STUDIES/AI/00_setup/a8_save_load.py` (검증: 저장 전후 예측 `[0,0,0,1,1]` 일치, 파라미터 752개)
+> 코드: `~/LOCAL/notebooks-mirror/ai-practice/00_setup/a8_save_load.py` (검증: 저장 전후 예측 `[0,0,0,1,1]` 일치, 파라미터 752개)
 
 ```python
 # 저장 — 상태(가중치)만 직렬화

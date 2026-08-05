@@ -115,7 +115,7 @@
 
 ## 🧩 코드 실습 (A.7)
 > 🎯 목표: 05 모델 + 07 데이터로더를 합쳐 실제로 학습시키고, 손실 수렴·정확도(`compute_accuracy`)를 확인.
-> 코드: `~/LOCAL/03-00_STUDIES/AI/00_setup/a7_training_loop.py`
+> 코드: `~/LOCAL/notebooks-mirror/ai-practice/00_setup/a7_training_loop.py`
 
 ```python
 import torch
@@ -154,7 +154,7 @@ def compute_accuracy(model, loader):
 
 ### 🍎 Apple([ˈæpəl], 애플, 애플) Silicon([ˈsɪlɪkən], 실리컨, 실리콘)(MPS([ɛm piː ɛs], 엠피에스, 엠피에스)) 전용 — 디바이스-애그노스틱 리팩토링
 > 🎯 목표: 내 장비(UMA([juː ɛm eɪ], 유엠에이, 유엠에이)·통합 메모리)에 맞춰 위 코드를 *디바이스-애그노스틱*으로 정리하고, x86+NVIDIA([ɛnˈvɪdiə], 엔비디아, 엔비디아) 전용 군더더기를 걷어낸다.
-> 코드: `~/LOCAL/03-00_STUDIES/AI/00_setup/a7_training_loop_mps.py` (검증: 손실→0, 예측 `[0,0,0,1,1]`, acc 1.0)
+> 코드: `~/LOCAL/notebooks-mirror/ai-practice/00_setup/a7_training_loop_mps.py` (검증: 손실→0, 예측 `[0,0,0,1,1]`, acc 1.0)
 
 핵심은 **디바이스-애그노스틱 패턴** — 코드 한 벌로 `mps`·`cuda`·`cpu` 어디서나 돈다.
 

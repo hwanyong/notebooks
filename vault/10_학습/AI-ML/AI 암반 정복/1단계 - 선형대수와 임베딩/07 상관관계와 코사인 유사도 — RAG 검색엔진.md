@@ -42,7 +42,7 @@
 
 ## 🧩 코사인 유사도 RAG 엔진 — 하드코딩 (§3.1 목표 코어)
 > 🎯 목표: numpy만으로 "문서 인덱싱 → 쿼리 임베딩 → 코사인 랭킹" 검색 엔진을 처음부터 구현. sklearn·벡터DB 없이 엔진 자체의 수학을 직접 짠다.
-> 코드: `~/LOCAL/03-00_STUDIES/AI/01_linear_algebra/la3_1_rag_engine.py`
+> 코드: `~/LOCAL/notebooks-mirror/ai-practice/01_linear_algebra/la3_1_rag_engine.py`
 
 ```python
 import numpy as np

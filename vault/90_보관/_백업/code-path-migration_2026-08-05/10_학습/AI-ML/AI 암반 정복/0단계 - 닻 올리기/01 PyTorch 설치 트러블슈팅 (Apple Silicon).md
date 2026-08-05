@@ -1,0 +1,150 @@
+---
+유형: 트러블슈팅
+코스: AI 암반 정복
+단계: 0
+도서: "[밑바닥LLM] 부록 A.1 (설치)"
+상태: 해결
+날짜: 2026-06-13
+환경: macOS (Apple Silicon) · zsh · Homebrew
+순서: 1
+이해도: 🟢
+태그:
+  - ai-ml
+  - pytorch
+  - 환경설정
+  - troubleshooting
+---
+
+# PyTorch 설치 트러블슈팅 (Apple Silicon)
+
+> macOS(Apple Silicon)에서 PyTorch([ˈpaɪtɔːrtʃ], 파이토치, 파이토치) 2.4.0 + MPS([ɛm piː ɛs], 엠피에스, 엠피에스)(GPU([dʒiː piː juː], 지피유, 지피유)) 환경을 잡기까지 겪은 문제와 해결 정리.
+> 한 줄 교훈: **"어느 파이썬에 설치되는가"를 항상 일치시켜라. 그리고 버전 호환(파이썬↔torch↔numpy)을 먼저 맞춰라.**
+
+> 🗺️ [[_0단계 - 닻 올리기|0단계 허브]] ｜ ⬅️ 이전: (없음) ｜ ➡️ 다음: [[02 텐서 이해하기|텐서 이해하기]]
+
+> [!question] 🎯 왜 이걸 배우나 — 필요성 사슬 (결핍 → 필요 → 발명)
+> *출발 문제(구체적 목표):* PyTorch로 신경망을 밑바닥부터 만들어 돌리려면, 먼저 내 맥(Apple Silicon)에서 `import torch`와 GPU가 실제로 동작하는 환경부터 서야 한다.
+> 1. 코드를 짤 환경이 아직 없다 → 파이썬에서 쓸 딥러닝 라이브러리가 필요 → **pip로 torch 설치**
+> 2. "설치 성공인데 import 실패" → pip와 python이 같은 인터프리터를 가리켜야 → **venv(가상환경)로 짝 일치**
+> 3. torch 2.4.0이 최신 파이썬용 휠이 없다 → 지원되는 버전을 깔아야 → **python@3.12로 venv 재생성 + numpy<2.0 고정**
+> 4. CPU만으로는 학습이 느리다 → GPU 가속을 켜야 → **MPS(Metal) 백엔드 확인 (`torch.backends.mps.is_available()`)**
+> **한 줄:** 라이브러리 설치 → 인터프리터 일치 → 버전 호환 사슬 → GPU(MPS) 확인, 이 4관문을 통과해야 비로소 코드를 짤 출발선에 선다.
+
+> [!abstract] 📘 책 핵심 — 부록 A.1 설치
+> - **설치:** `pip install torch` = CPU+GPU 풀버전. 책 기준 버전 고정 `pip install torch==2.4.0`. OS별 명령은 pytorch.org에서 골라 받음.
+> - **GPU 확인(NVIDIA):** `torch.cuda.is_available()` → `True`면 준비 완료. GPU 없으면 Google Colab 등 클라우드 GPU 사용 가능.
+> - **Apple Silicon(M1~):** CUDA 없음 → `torch.backends.mps.is_available()`로 확인.
+> - **연습문제 A.1/A.2:** 설치·환경 설정 후, 제공 코드를 실행해 환경이 올바른지 검증.
+>
+> ↪ *아래는 이 과정을 직접 해보며 겪은 트러블슈팅(내 경험·통찰).*
+
+---
+
+## ✅ 최종 성공 레시피 (재현용)
+
+```bash
+# 1. torch 2.4.0이 지원하는 파이썬 버전(3.12) 확보
+brew install python@3.12
+
+# 2. 프로젝트 전용 가상환경 (3.12로 생성하는 게 핵심)
+cd ~/LOCAL/03-00_STUDIES/AI/sandbox
+python3.12 -m venv .venv
+source .venv/bin/activate
+
+# 3. torch + 호환되는 numpy(2.0 미만) 설치  ※ '<'는 따옴표 필수
+pip install torch==2.4.0
+pip install "numpy<2.0.0"        # numpy 1.26.4 설치됨
+```
+
+```python
+# version_pytorch.py
+import torch
+print(torch.__version__)                      # -> 2.4.0
+
+# check_spec.py  (Apple Silicon GPU 사용 가능 확인)
+import torch
+print(torch.backends.mps.is_available())      # -> True
+```
+
+> **결과:** torch 2.4.0, numpy 1.26.4, MPS(Metal GPU) 사용 가능 = `True`
+
+---
+
+## 🐛 겪은 문제와 원인 → 해결
+
+### 1. `brew install pytorch` 후에도 `import torch` 실패
+- **증상:** `ModuleNotFoundError: No module named 'torch'`
+- **원인:** Homebrew의 `pytorch`는 **C++ 라이브러리(libtorch)** 라서 파이썬 `import torch`와 무관. 파이썬용은 `pip`로 받아야 함.
+- **해결:** brew 패키지에 의존하지 말고 **pip(가상환경)로 설치**.
+
+### 2. `pip install torch` 성공했는데도 import 실패 ⭐가장 헷갈린 부분
+- **증상:** 설치는 "Successfully installed torch-2.4.0"인데 `python3 version_pytorch.py`는 여전히 ModuleNotFound.
+- **원인:** **`pip`와 `python3`가 서로 다른 파이썬을 가리킴.**
+  - `pip` → miniconda base의 Python 3.12에 설치
+  - `python3` → Homebrew Python **3.14** 실행 → 거기엔 torch가 없음
+- **해결:** 가상환경을 만들어 **그 안의 pip = python 짝을 일치**시킴. (확인: `which python3`, `python3 -m pip` 사용 습관)
+
+### 3. `pip3 install ...` → `externally-managed-environment`
+- **증상:** PEP 668 에러로 시스템 전역 설치 차단.
+- **원인:** Homebrew가 관리하는 파이썬은 전역 오염 방지를 위해 직접 설치를 막음.
+- **해결:** 전역에 깔지 말고 **venv 사용**. (정 급하면 `--break-system-packages`지만 비권장.)
+
+### 4. venv에서 `torch==2.4.0`을 못 찾음
+- **증상:** `Could not find a version that satisfies the requirement torch==2.4.0 (from versions: 2.9.0, ...)`
+- **원인:** 그 venv가 **Python 3.14**로 만들어짐. torch 2.4.0은 3.14용 휠(cp314)이 없음 (파이썬이 너무 최신).
+- **해결:** **`brew install python@3.12` → `python3.12 -m venv .venv`** 로 버전을 낮춰 재생성.
+
+### 5. torch는 되는데 NumPy([ˈnʌmpaɪ], 넘파이, 넘파이) 경고
+- **증상:** `UserWarning: Failed to initialize NumPy: No module named 'numpy'`
+- **원인:** numpy 미설치. (torch 단독은 동작하지만 텐서↔numpy 변환 등에서 필요)
+- **해결:** `pip install "numpy<2.0.0"`. torch 2.4.0은 **numpy 1.x로 빌드**되어 numpy 2.x와 충돌하므로 2.0 미만으로 고정.
+
+### 6. `pip install numpy<2.0.0` → `zsh: no such file or directory: 2.0.0`
+- **원인:** 쉘이 `<`를 **입력 리다이렉션**으로 해석.
+- **해결:** **따옴표로 감싸기** → `pip install "numpy<2.0.0"`.
+
+### 7. `torch.backends.map.is_available()` → AttributeError
+- **증상:** `module 'torch.backends' has no attribute 'map'`
+- **원인:** **오타.** Apple Silicon GPU 백엔드는 `map`이 아니라 **`mps`** (Metal Performance Shaders).
+- **해결:** `torch.backends.mps.is_available()` → `True`.
+
+---
+
+## 💡 핵심 교훈
+1. **brew(시스템 라이브러리) ≠ pip(파이썬 패키지)** — 파이썬에서 쓸 건 pip로.
+2. **설치 대상 인터프리터를 일치시켜라** — `python -m pip install ...`, venv 활성화 확인. "성공했는데 import 안 됨"의 99%는 이것.
+3. **버전 호환 사슬: 파이썬 ↔ torch ↔ numpy** — 최신 파이썬이 항상 정답은 아님. 원하는 torch가 지원하는 파이썬(여기선 3.12)을 먼저 고정.
+4. **쉘 메타문자(`<`, `>`)가 든 버전 지정은 따옴표.**
+5. Apple Silicon GPU = **MPS** 백엔드. `torch.backends.mps.is_available()`로 확인.
+
+> [!quote] 🔬 연결 — 이 MPS가 사실은 'UMA(통합 메모리)'다   `#연결/CS`
+> 여기서 잡은 **MPS(Metal) = Apple Silicon**의 GPU 백엔드. 이 칩은 CPU([siː piː juː], 시피유, 시피유)·GPU가 메모리를 통합 공유(UMA([juː ɛm eɪ], 유엠에이, 유엠에이))해서, 훈련 루프의 **호스트–디바이스 전송 병목이 구조적으로 없다**(zero-copy). x86 + NVIDIA였다면 PCIe로 데이터를 이주시켜야 하는 그 비용을 내 장비는 안 낸다(대신 전용 VRAM의 폭발적 대역폭과는 맞바꿈). → 자세히 [[08 훈련 루프 (Training Loop)|훈련 루프]] 🔬 "Apple Silicon UMA" 콜아웃.
+
+## 🧩 환경 구성 정리 (`which -a python3` 결과)
+
+PATH 우선순위 순서(위가 먼저 잡힘):
+
+| 순위 | 경로 | 정체 | 비고 |
+|---|---|---|---|
+| 1 | `.../AI/sandbox/.venv/bin/python3` | **활성 venv (3.12)** | 활성화 시 `python3`가 여기로 → 정상 동작 |
+| 2 | `/opt/homebrew/bin/python3` | **Homebrew 3.14** | venv 끄면 여기로 → torch 2.4.0 안 되던 범인 |
+| 3 | `/opt/homebrew/Caskroom/miniconda/base/bin/python3` | **miniconda base (3.12)** | conda base 자동 활성화 → `pip`이 몰래 여기로 갔던 이유 |
+| 4 | `/usr/bin/python3` | macOS 시스템 | 건드리지 말 것 |
+
+**진단:** venv를 켜면 1번이 이겨 정상. venv를 끄면 `python3`=Homebrew 3.14인데 `pip`=conda base로 갈려 어긋났던 것. 근본 원인은 **conda base 자동 활성화**.
+
+**정리 권장(비파괴):**
+- [ ] conda base 자동 활성화 끄기: `conda config --set auto_activate_base false`
+- [x] 프로젝트마다 venv + 설치는 항상 `python -m pip install ...`
+- 2번(Homebrew)·4번(시스템)은 그대로 둬도 무방.
+
+## 📌 암기 카드
+> 앞면(cue)을 보고 뒷면을 떠올린 뒤 확인. (→ [[_핵심 암기장]])
+
+| 앞면 (cue) | 뒷면 (외울 내용) |
+|---|---|
+| Apple Silicon GPU 사용 가능 확인 API? | `torch.backends.mps.is_available()` (MPS = Metal Performance Shaders) |
+| NVIDIA GPU 사용 가능 확인 API? | `torch.cuda.is_available()` |
+| brew의 `pytorch`와 pip의 `torch` 차이? | brew=C++ 라이브러리(libtorch), 파이썬 `import torch`와 무관 / 파이썬용은 pip로 설치 |
+| "설치 성공인데 import 실패" 99% 원인? | `pip`와 `python`이 서로 다른 파이썬을 가리킴 → venv로 pip=python 짝 일치 |
+| torch 2.4.0의 호환 사슬(파이썬·numpy)? | 파이썬 3.12, numpy 1.x(`"numpy<2.0.0"`) — torch 2.4.0은 numpy 1.x로 빌드 |

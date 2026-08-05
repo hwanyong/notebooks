@@ -109,7 +109,7 @@
 새 개념 노트는 [[개념 노트 템플릿 (커리큘럼용)]]에서 시작합니다.
 
 ### 💻 실습 코드 위치 (볼트 밖)
-- 코드 저장소: `~/LOCAL/03-00_STUDIES/AI/` — 단계별 폴더(`00_setup` … `04_career`)가 이 커리큘럼과 1:1.
+- 코드 저장소: `~/LOCAL/notebooks-mirror/ai-practice/` — 단계별 폴더(`00_setup` … `04_career`)가 이 커리큘럼과 1:1.
 - 노트에는 **전체 코드가 아니라 핵심 스니펫만** 발췌하고, 위 저장소의 **파일 경로**(필요 시 git 커밋 해시)를 같이 적습니다.
 - 환경: Python 3.12 공유 venv(`AI/.venv`), torch 2.4.0 + numpy<2.0.
 - **📦 책 공식 코드 저장소(실행 정본):** <https://github.com/rickiepark/llm-from-scratch> — ⚠️ 책 인쇄 코드는 지면 절약용 **파편 스니펫**이라 `import`·클래스 선언이 생략되고 **오타(errata)** 도 있을 수 있다(예: `optimizer_zero_grad()` → 실제 `optimizer.zero_grad()`). 또 부록 A 예제는 *주피터 노트북처럼 위→아래로 누적 실행*되어 앞 셀의 `NeuralNetwork`·`train_loader`가 전역 메모리에 살아 있는 전제다(따로 떼면 `NameError`). **책 본문 = 개념 가이드, 저장소 `.py` = 실행 정본.**
